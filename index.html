@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کمک آموزشی هدیه آسمانی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            overflow-x: hidden;
+        }
+        .main-container {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        .gold-text {
+            color: #FFD700;
+        }
+        .btn-primary {
+            background-color: #FFD700;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+            transform: perspective(1px) translateZ(0);
+        }
+        .btn-primary:hover {
+            background-color: #1a1a1a;
+            color: #FFD700;
+            box-shadow: 0 0 15px #FFD700;
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            transition: all 0.3s ease;
+             transform: perspective(1px) translateZ(0);
+        }
+        .btn-secondary:hover {
+            background-color: #FFD700;
+            color: #1a1a1a;
+            box-shadow: 0 0 10px #FFD700;
+            transform: scale(1.05);
+        }
+        .card {
+            background-color: #2c2c2c;
+            border: 1px solid #FFD700;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.1);
+        }
+        .view {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .quiz-option.correct {
+            background-color: #28a745 !important;
+            color: white !important;
+            border-color: #28a745 !important;
+        }
+        .quiz-option.incorrect {
+            background-color: #dc3545 !important;
+            color: white !important;
+            border-color: #dc3545 !important;
+        }
+        .quiz-option:not([disabled]):hover {
+            background-color: #FFD700;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body class="main-container">
+
+    <div id="app-container" class="min-h-screen flex flex-col items-center justify-center p-4">
+        
+        <!-- Grade Selection View -->
+        <div id="grade-selection-view" class="view w-full max-w-md text-center">
+            <h1 class="text-4xl md:text-5xl font-bold gold-text mb-4">هدیه آسمانی</h1>
+            <p class="text-lg text-gray-300 mb-8">پایه تحصیلی خود را انتخاب کنید</p>
+            <div class="space-y-4">
+                <button onclick="selectGrade('7')" class="btn-primary w-full py-3 px-6 text-xl font-bold rounded-lg shadow-lg">پایه هفتم</button>
+                <button onclick="selectGrade('8')" class="btn-primary w-full py-3 px-6 text-xl font-bold rounded-lg shadow-lg">پایه هشتم</button>
+                <button onclick="selectGrade('9')" class="btn-primary w-full py-3 px-6 text-xl font-bold rounded-lg shadow-lg">پایه نهم</button>
+            </div>
+        </div>
+
+        <!-- Main Menu View -->
+        <div id="main-menu-view" class="view w-full max-w-md text-center">
+             <button onclick="showView('grade-selection-view')" class="absolute top-4 right-4 btn-secondary py-2 px-4 rounded-lg">&rarr; بازگشت</button>
+            <h2 class="text-3xl font-bold gold-text mb-8">پایه <span id="selected-grade-title"></span></h2>
+            <div class="space-y-4">
+                <button onclick="selectSection('qa')" class="btn-secondary w-full py-3 px-6 text-xl font-bold rounded-lg">سوال و جواب‌های کتاب</button>
+                <button onclick="selectSection('quiz')" class="btn-secondary w-full py-3 px-6 text-xl font-bold rounded-lg">آزمون و تست</button>
+            </div>
+        </div>
+
+        <!-- Lesson Selection View -->
+        <div id="lesson-selection-view" class="view w-full max-w-md text-center">
+            <button onclick="showView('main-menu-view')" class="absolute top-4 right-4 btn-secondary py-2 px-4 rounded-lg">&rarr; بازگشت</button>
+            <h2 class="text-3xl font-bold gold-text mb-8">انتخاب درس</h2>
+            <div id="lesson-grid" class="grid grid-cols-3 gap-4">
+                <!-- Lessons will be populated here -->
+            </div>
+        </div>
+
+        <!-- Q&A View -->
+        <div id="qa-view" class="view w-full max-w-3xl">
+            <button onclick="showView('lesson-selection-view')" class="absolute top-4 right-4 btn-secondary py-2 px-4 rounded-lg">&rarr; بازگشت</button>
+            <h2 id="qa-title" class="text-3xl font-bold gold-text mb-6 text-center"></h2>
+            <div id="qa-content" class="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
+                <!-- Q&A items will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Quiz View -->
+        <div id="quiz-view" class="view w-full max-w-2xl text-center">
+             <button onclick="showView('lesson-selection-view')" class="absolute top-4 right-4 btn-secondary py-2 px-4 rounded-lg">&rarr; بازگشت</button>
+             <div id="quiz-container" class="card p-6 md:p-8">
+                <div id="quiz-content">
+                    <h2 id="quiz-question" class="text-2xl font-bold mb-6"></h2>
+                    <div id="quiz-options" class="space-y-4">
+                        <!-- Quiz options will be populated here -->
+                    </div>
+                </div>
+                <div id="quiz-result" class="hidden">
+                     <h2 class="text-3xl font-bold gold-text mb-4">آزمون تمام شد!</h2>
+                     <p class="text-xl mb-6">امتیاز شما: <span id="quiz-score" class="font-bold"></span></p>
+                     <button onclick="startQuiz(currentState.grade, currentState.lesson)" class="btn-primary py-2 px-8 text-lg font-bold rounded-lg">آزمون مجدد</button>
+                </div>
+             </div>
+        </div>
+
+    </div>
+
+    <script>
+        const data = {
+            '7': {
+                lessons: {} // Add data for 7th grade later
+            },
+            '8': {
+                lessons: {} // Add data for 8th grade later
+            },
+            '9': {
+                lessons: {
+                    '1': {
+                        title: 'درس اول: تو را چگونه بشناسم؟',
+                        qa: [
+                            { q: "1. صفاتی را که در شعر اول درس به خدا نسبت داده شده است را بیان کنید.", a: "پاک – راهنما – یکتا – حکیم – عظیم – کریم – رحیم – عزیز" },
+                            { q: "2. چه صفات دیگری از خدا می شناسید که در شعر درس نیامده است؟", a: "شنوا و دانا و با جلال و عظیم مهربان و بخشنده و …" },
+                            { q: "3. راههای شناخت صفات خدا را نام ببرید و در باره هر کدام به اختصار توضیح دهید.", a: "1-تفکر در کتاب آسمانی (برای شناخت خداوند به سخنان ایشان مراجعه کنیم چراکه توصیف خداوند از خود، یک توصیف دقیق و بی نقص است.) 2-تفکر در کتاب خلقت (یعنی از طریق آثار و نشانه های او در جهان، به ویژگی های او پی ببریم.)" },
+                            { q: "4. چرا ما امکان شناخت کامل خداوند نامحدود را نداریم؟", a: "به دلیل توانایی های محدود خود" },
+                            { q: "5. حدیثی از پیامبر درباره شناخت محدود از خداوند را بنویسید و ترجمه کنید.", a: "(ما عَرَفناکَ حَقَّ مَعرِفَتِکَ) «آن چنان که شایسته معرفت(شناخت) توست، تو را نشناختیم.»" },
+                            { q: "6. تفکر در کتاب آسمانی به چه مفهومی است؟", a: "برای شناخت خداوند به سخنان ایشان مراجعه کنیم چراکه توصیف خداوند از خود، یک توصیف دقیق و بی نقص است." },
+                            { q: "7. بهترین راه برای شناخت صفات خداوند ……………", a: "مراجعه به سخن خود او ست." },
+                            { q: "8. توصیف خداوند از خود چگونه توصیفی است؟", a: "یک توصیف دقیق و بی نقص است که ما را در شناخت صحیح بیشتر یاری می کند." },
+                            { q: "9. مفهوم اینکه خداوند بر همه چیز آگاه است چیست؟", a: "او از آنچه در قلب ما می گذرد و از آنچه چشمهای ما می بیند و آنچه در گوش دیگران نجوا می کنیم آگاه است." },
+                            { q: "10. آیه ای در مورد علم خداوند به نهان و آشکار بنویسید و ترجمه کنید.", a: "(اِنَّهُ یَعلَمُ الجَهرَ وَ ما یَخفی) «او هر آشکار و نهانی را می داند»" },
+                            { q: "11. خداوند مهربان است و مهرورزی را بر خود واجب کرده است و خود را …………", a: "دوستدار آنان نامیده است." },
+                            { q: "12. آیه ایی در مورد دوست داشتن خداوند و محبت او نسبت به بندگان را بنویسید و ترجمه کنید.", a: "(وَ هُوَ الغَفورُ الوَدودُ) «او بسیار آمرزنده و دوستدار بندگانش است.»" },
+                            { q: "13. خداوند چه کسانی را مجازات می کند؟", a: "کسانی که با حقّ مبارزه می کنند و گناه و سرکشی می کنند." },
+                            { q: "14. آیه ای در مورد مجازات کردن افراد سرکش توسط خداوند بنویسید و معنا کنید.", a: "(وَ مَن یُشاقِّ اللهَ فَاِنَّ اللهَ شَدیدُ العِقابِ) «و هر که با خدا دشمنی کند، بداند که خداوند به سختی عقوبت می کند»" },
+                            { q: "15. آیه ایی در مورد ظلم انسان به خود بیان کنید و ترجمه نمایید.", a: "(اِنَّ اللهَ لا یَظلِمُ النّاسَ شَیئاً وَ لکِنَّ النّاسَ اَنفُسَهُم یَظلِمونَ) «خداوند به مردم هیچ ستمی نمی کند بلکه این مردم هستند که به خودشان ستم می کنند.»" },
+                            { q: "16. خداوند چه کسانی را می بخشد؟", a: "کسانی که از گناه خود پشیمان شوند و توبه کنند." },
+                            { q: "17. آیه ایی در مورد توبه کنندگان بنویسید.", a: "(اِنَّ اللهَ یُحِبُّ التَّوّابینَ) «همانا خداوند توبه کنندگان را دوست دارد.»" },
+                            { q: "18. هدف خداوند از احکام و قوانینش چیست؟", a: "هدایت انسان و راهنمایی او به سمت خوشبختی و جلوگیری از گمراهی" },
+                            { q: "19. تفکر در کتاب خلقت به چه معناست؟", a: "یعنی از طریق آثار و نشانه های او که در سراسر جهان آفرینش وجود دارد، به ویژگی های او پی ببریم." },
+                            { q: "20. با تفکر در جهان خلقت نیز ……………", a: "علاوه بر پی بردن به وجود خالقی بی همتا، با برخی از ویژگی ها و صفات او نیز آشنا شویم." },
+                            { q: "21. خداوند سرچشمه همه خوبیها و کمالات است یعنی چه؟", a: "یعنی هر خوبی و کمالی که مخلوقات دارند از خالق دریافت کرده اند." },
+                            { q: "22. صفاتی را که نمی توان به خدا نسبت داد نام ببرید.", a: "جهل – ظلم – ضعف – جسم بودن – محدود بودن" },
+                            { q: "23. ستایش حقیقی و حمد واقعی از آنِ کیست؟", a: "از آنِ خداست." },
+                            { q: "24. حمد و تسبیح به چه معناست؟", a: "حمد: به معنای ستایش «توصیف زیبایی ها و کمالات الهی»\nتسبیح: به معنای پاک و منزه دانستن از هر نقص و عیبی" },
+                        ],
+                        quiz: [
+                           { q: "معنای «حمد» چیست؟", options: ["پاک و منزه دانستن", "ستایش و توصیف زیبایی‌ها", "شکرگزاری", "ایمان آوردن"], answer: "ستایش و توصیف زیبایی‌ها" },
+                           { q: "آیه «اِنَّ اللهَ یُحِبُّ التَّوّابینَ» به کدام ویژگی خداوند اشاره دارد؟", options: ["عذاب شدید", "دوست داشتن توبه کنندگان", "آگاهی از پنهان و آشکار", "عادل بودن"], answer: "دوست داشتن توبه کنندگان" },
+                           { q: "کدام یک از صفات زیر را نمی‌توان به خداوند نسبت داد؟", options: ["کریم", "رحیم", "جسم بودن", "عزیز"], answer: "جسم بودن" },
+                           { q: "بهترین راه برای شناخت صفات خداوند چیست؟", options: ["تفکر در خود", "پرسش از دیگران", "مراجعه به سخن خود او", "مطالعه تاریخ"], answer: "مراجعه به سخن خود او" },
+                           { q: "ترجمه «ما عَرَفناکَ حَقَّ مَعرِفَتِکَ» کدام است؟", options: ["تو را به حق شناختیم", "آنچنان که شایسته توست، تو را نشناختیم", "شناخت تو بر ما حق است", "تو را به خوبی می‌شناسیم"], answer: "آنچنان که شایسته توست، تو را نشناختیم" }
+                        ]
+                    }
+                }
+            }
+        };
+
+        let currentState = {
+            grade: null,
+            section: null,
+            lesson: null,
+            quiz: {
+                currentQuestionIndex: 0,
+                score: 0
+            }
+        };
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(view => {
+                view.style.display = 'none';
+            });
+            document.getElementById(viewId).style.display = 'block';
+        }
+
+        function selectGrade(grade) {
+            currentState.grade = grade;
+            const gradeMap = {'7':'هفتم', '8':'هشتم', '9':'نهم'};
+            document.getElementById('selected-grade-title').textContent = gradeMap[grade];
+            showView('main-menu-view');
+        }
+
+        function selectSection(section) {
+            currentState.section = section;
+            populateLessons();
+            showView('lesson-selection-view');
+        }
+
+        function populateLessons() {
+            const lessonGrid = document.getElementById('lesson-grid');
+            lessonGrid.innerHTML = '';
+            const lessons = data[currentState.grade].lessons;
+            if (Object.keys(lessons).length === 0) {
+                 lessonGrid.innerHTML = '<p class="col-span-3 text-gray-400">درسی برای این پایه هنوز اضافه نشده است.</p>';
+                 return;
+            }
+            for (const lessonNumber in lessons) {
+                const button = document.createElement('button');
+                button.className = 'btn-secondary py-4 rounded-lg text-lg';
+                button.textContent = `درس ${lessonNumber}`;
+                button.onclick = () => selectLesson(lessonNumber);
+                lessonGrid.appendChild(button);
+            }
+        }
+        
+        function selectLesson(lessonNumber) {
+            currentState.lesson = lessonNumber;
+            if (currentState.section === 'qa') {
+                renderQA(currentState.grade, lessonNumber);
+                showView('qa-view');
+            } else if (currentState.section === 'quiz') {
+                startQuiz(currentState.grade, lessonNumber);
+                showView('quiz-view');
+            }
+        }
+
+        function renderQA(grade, lessonNumber) {
+            const lessonData = data[grade].lessons[lessonNumber];
+            document.getElementById('qa-title').textContent = lessonData.title;
+            const qaContent = document.getElementById('qa-content');
+            qaContent.innerHTML = '';
+            lessonData.qa.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'card p-4';
+                div.innerHTML = `
+                    <p class="font-bold gold-text mb-2">${item.q}</p>
+                    <p class="text-gray-300">${item.a}</p>
+                `;
+                qaContent.appendChild(div);
+            });
+        }
+        
+        function startQuiz(grade, lessonNumber) {
+            currentState.quiz.currentQuestionIndex = 0;
+            currentState.quiz.score = 0;
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-content').classList.remove('hidden');
+            showNextQuestion();
+        }
+
+        function showNextQuestion() {
+            const quizData = data[currentState.grade].lessons[currentState.lesson].quiz;
+            const questionIndex = currentState.quiz.currentQuestionIndex;
+
+            if (questionIndex >= quizData.length) {
+                showQuizResult();
+                return;
+            }
+
+            const questionData = quizData[questionIndex];
+            document.getElementById('quiz-question').textContent = questionData.q;
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            // Shuffle options
+            const shuffledOptions = [...questionData.options].sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'quiz-option btn-secondary w-full py-3 text-lg rounded-lg text-right px-4';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option, questionData.answer, button);
+                optionsContainer.appendChild(button);
+            });
+        }
+        
+        function checkAnswer(selectedOption, correctAnswer, button) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.disabled = true;
+                if (opt.textContent === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                currentState.quiz.score++;
+            } else {
+                button.classList.add('incorrect');
+            }
+            
+            currentState.quiz.currentQuestionIndex++;
+            setTimeout(showNextQuestion, 1500);
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-content').classList.add('hidden');
+            const resultContainer = document.getElementById('quiz-result');
+            const quizData = data[currentState.grade].lessons[currentState.lesson].quiz;
+            document.getElementById('quiz-score').textContent = `${currentState.quiz.score} از ${quizData.length}`;
+            resultContainer.classList.remove('hidden');
+        }
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', () => {
+            showView('grade-selection-view');
+        });
+    </script>
+</body>
+</html>
