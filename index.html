@@ -87,7 +87,30 @@
                 <button onclick="selectGrade('8')" class="btn-primary w-full py-3 px-6 text-xl font-bold rounded-lg shadow-lg">پایه هشتم</button>
                 <button onclick="selectGrade('9')" class="btn-primary w-full py-3 px-6 text-xl font-bold rounded-lg shadow-lg">پایه نهم</button>
             </div>
+             <div class="mt-8">
+                 <button onclick="showView('settings-view')" class="btn-secondary py-2 px-6 text-lg font-bold rounded-lg">تنظیمات</button>
+            </div>
         </div>
+        
+        <!-- Settings View -->
+        <div id="settings-view" class="view w-full max-w-md text-center">
+            <button onclick="showView('grade-selection-view')" class="absolute top-4 right-4 btn-secondary py-2 px-4 rounded-lg">&rarr; بازگشت</button>
+            <h2 class="text-3xl font-bold gold-text mb-8">تنظیمات</h2>
+            <div class="space-y-4">
+                <button onclick="showView('creators-view')" class="btn-secondary w-full py-3 px-6 text-xl font-bold rounded-lg">سازندگان</button>
+            </div>
+        </div>
+
+        <!-- Creators View -->
+        <div id="creators-view" class="view w-full max-w-md text-center">
+            <button onclick="showView('settings-view')" class="absolute top-4 right-4 btn-secondary py-2 px-4 rounded-lg">&rarr; بازگشت</button>
+            <h2 class="text-3xl font-bold gold-text mb-8">سازندگان</h2>
+            <div class="card p-6 text-lg text-right leading-loose">
+                <p><span class="font-bold gold-text">برنامه نویس:</span> علی بابایی</p>
+                <p><span class="font-bold gold-text">طراح سوال و سوال های تستی:</span> استاد صفری</p>
+            </div>
+        </div>
+
 
         <!-- Main Menu View -->
         <div id="main-menu-view" class="view w-full max-w-md text-center">
@@ -164,7 +187,7 @@
                             { q: "12. آیه ایی در مورد دوست داشتن خداوند و محبت او نسبت به بندگان را بنویسید و ترجمه کنید.", a: "(وَ هُوَ الغَفورُ الوَدودُ) «او بسیار آمرزنده و دوستدار بندگانش است.»" },
                             { q: "13. خداوند چه کسانی را مجازات می کند؟", a: "کسانی که با حقّ مبارزه می کنند و گناه و سرکشی می کنند." },
                             { q: "14. آیه ای در مورد مجازات کردن افراد سرکش توسط خداوند بنویسید و معنا کنید.", a: "(وَ مَن یُشاقِّ اللهَ فَاِنَّ اللهَ شَدیدُ العِقابِ) «و هر که با خدا دشمنی کند، بداند که خداوند به سختی عقوبت می کند»" },
-                            { q: "15. آیه ایی در مورد ظلم انسان به خود بیان کنید و ترجمه نمایید.", a: "(اِنَّ اللهَ لا یَظلِمُ النّاسَ شَیئاً وَ لکِنَّ النّاسَ اَنفُسَهُم یَظلِمونَ) «خداوند به مردم هیچ ستمی نمی کند بلکه این مردم هستند که به خودشان ستم می کنند.»" },
+                            { q: "15. آیه ایی در مورد ظلم انسان به خود بیان کنید و ترجمه نمایید.", a: "(اِنَّ اللهَ لا یَظلِمُ النّاسَ شَیئاً وَ لکِنَّ النّاسَ اَنفُsَهُم یَظلِمونَ) «خداوند به مردم هیچ ستمی نمی کند بلکه این مردم هستند که به خودشان ستم می کنند.»" },
                             { q: "16. خداوند چه کسانی را می بخشد؟", a: "کسانی که از گناه خود پشیمان شوند و توبه کنند." },
                             { q: "17. آیه ایی در مورد توبه کنندگان بنویسید.", a: "(اِنَّ اللهَ یُحِبُّ التَّوّابینَ) «همانا خداوند توبه کنندگان را دوست دارد.»" },
                             { q: "18. هدف خداوند از احکام و قوانینش چیست؟", a: "هدایت انسان و راهنمایی او به سمت خوشبختی و جلوگیری از گمراهی" },
